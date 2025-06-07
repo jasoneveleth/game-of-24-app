@@ -24,10 +24,10 @@ function* permutations(set) {
     return
   }
 
-  for (const x of set) {
-    const rest = set.filter((y) => y !== x)
+  for (let i = 0; i < set.length; i++) {
+    const rest = [...set.slice(0, i), ...set.slice(i + 1)]
     for (const perm of permutations(rest)) {
-      yield [x, ...perm]
+      yield [set[i], ...perm]
     }
   }
 }

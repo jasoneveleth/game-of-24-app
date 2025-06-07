@@ -15,7 +15,7 @@ export default function ArithmeticTreeApp() {
   const [foundTrees, setFoundTree] = useState([])
 
   const handleInputChange = (index, value) => {
-    if (/^([1-9]|10)$/.test(value)) {
+    if (/^(|[1-9]|10)$/.test(value)) {
       const newNumbers = [...numbers]
       newNumbers[index] = value
       setNumbers(newNumbers)
@@ -25,11 +25,13 @@ export default function ArithmeticTreeApp() {
   useEffect(() => {
     if (numbers.every((num) => num !== '')) {
       let acc = []
+      let set = new Set() // to avoid duplicate permutations from non-unique input
       for (const perm of permutations(numbers.map((x) => parseInt(x)))) {
         for (const op_list of cartesianPower(ops, 3)) {
           for (const tree_type of treeTypes) {
             const tree = construct(perm, tree_type(), op_list)
-            if (evaluate(tree) === 24) {
+            if (evaluate(tree) === 24 && !set.has(stringify_tree(tree))) {
+              set.add(stringify_tree(tree))
               acc.push(tree)
             }
           }
@@ -69,7 +71,7 @@ export default function ArithmeticTreeApp() {
           gridTemplateColumns: '1fr 1fr',
           gap: '1rem',
           overflowY: 'auto',
-          maxHeight: '400px',
+          maxHeight: '600px',
         }}>
         {foundTrees.map((tree, _) => (
           <Tree key={stringify_tree(tree)} tree={tree} />
