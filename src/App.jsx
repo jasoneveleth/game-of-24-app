@@ -104,12 +104,12 @@ export default function ArithmeticTreeApp() {
           ))}
           <button
             onClick={handleDone}
-            className="px-2 py-1 bg-blue-400 dark:bg-blue-700 text-white rounded-lg font-medium">
+            className="px-2 py-1 bg-blue-400 active:bg-blue-300 dark:bg-blue-700 dark:active:bg-blue-500 text-white rounded-lg font-medium hover:cursor-pointer">
             Done
           </button>
           <button
             onClick={clearAll}
-            className="px-2 py-1 bg-red-400 dark:bg-red-700 text-white rounded-lg font-medium">
+            className="px-2 py-1 bg-red-400 active:bg-red-300 dark:bg-red-700 dark:active:bg-red-500 text-white rounded-lg font-medium hover:cursor-pointer">
             Clear
           </button>
         </div>
