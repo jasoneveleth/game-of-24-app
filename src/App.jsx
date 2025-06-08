@@ -122,12 +122,12 @@ export default function ArithmeticTreeApp() {
         {Object.values(foundTrees).flat().length}
       </h2>
       <div
+        className="max-h-100 md:max-h-150"
         style={{
           display: 'grid',
           gridTemplateColumns: '1fr',
           gap: '1rem',
           overflowY: 'auto',
-          maxHeight: '40svh',
         }}>
         {Object.keys(foundTrees).map((tree_str, i) => (
           <div

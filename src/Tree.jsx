@@ -35,15 +35,13 @@ export default function Tree({ tree }) {
   const treeData = convertTreeToD3Format(tree || defaultTree)
 
   const style = {
-    linkColor: '#555',
     nodeRadius: 12,
     linkWidth: 2,
     showText: true,
-    nodeStroke: '#000',
     strokeWidth: 2,
-    textColor: '#000',
-    nodeFill: '#fff',
   }
+
+  const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches
 
   useEffect(() => {
     if (!treeData) return
@@ -56,6 +54,9 @@ export default function Tree({ tree }) {
 
     svg.attr('width', width).attr('height', height)
 
+    const isBalanced =
+      treeData.children[0].children && treeData.children[1].children
+
     // Create tree layout
     const treeLayout = d3
       .tree()
@@ -63,6 +64,13 @@ export default function Tree({ tree }) {
         width - margin.left - margin.right,
         height - margin.top - margin.bottom,
       ])
+      .separation((a, b) => {
+        const baseSeparation = a.parent === b.parent ? 1 : 2
+        if (isBalanced) {
+          console.log('bal')
+        }
+        return isBalanced ? baseSeparation * 4 : baseSeparation
+      })
 
     const root = d3.hierarchy(treeData)
     const treeNodes = treeLayout(root)
@@ -81,7 +89,7 @@ export default function Tree({ tree }) {
       .attr('y1', (d) => d.source.y)
       .attr('x2', (d) => d.target.x)
       .attr('y2', (d) => d.target.y)
-      .attr('stroke', style.linkColor)
+      .attr('stroke', isDark ? '#888' : '#555')
       .attr('stroke-width', style.linkWidth)
 
     // Add nodes
@@ -97,12 +105,9 @@ export default function Tree({ tree }) {
     node
       .append('circle')
       .attr('r', style.nodeRadius)
-      .attr('stroke', style.nodeStroke)
+      .attr('stroke', isDark ? '#fff' : '#000')
       .attr('stroke-width', style.strokeWidth || 0)
-      .attr('fill', (d) => {
-        const depth = d.depth
-        return style.nodeFill || '#fff'
-      })
+      .attr('fill', isDark ? '#242424' : '#fff')
 
     // Add text if enabled
     if (style.showText) {
@@ -113,7 +118,7 @@ export default function Tree({ tree }) {
         .attr('font-family', 'system-ui')
         .attr('font-size', '16px')
         .attr('font-weight', 'bold')
-        .attr('fill', style.textColor || '#000')
+        .attr('fill', isDark ? '#fff' : '#000')
         .text((d) => d.data.name)
     }
   }, [tree, treeData])
