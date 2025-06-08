@@ -104,16 +104,16 @@ export default function ArithmeticTreeApp() {
           ))}
           <button
             onClick={handleDone}
-            className="px-2 py-1 bg-blue-400 text-white rounded-lg font-medium">
+            className="px-2 py-1 bg-blue-400 dark:bg-blue-700 text-white rounded-lg font-medium">
             Done
           </button>
           <button
             onClick={clearAll}
-            className="px-2 py-1 bg-red-400 text-white rounded-lg font-medium">
+            className="px-2 py-1 bg-red-400 dark:bg-red-700 text-white rounded-lg font-medium">
             Clear
           </button>
         </div>
-        <p className="text-center text-gray-600">
+        <p className="text-center text-gray-600 dark:text-gray-400">
           Enter 4 numbers (type '0' for 10)
         </p>
       </div>
