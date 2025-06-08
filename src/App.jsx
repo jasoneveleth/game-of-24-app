@@ -11,15 +11,39 @@ import exampleTree1, {
   same,
 } from './fun'
 
+const GOLD_NUM = 24
+
 export default function ArithmeticTreeApp() {
   const [numbers, setNumbers] = useState(['', '', '', ''])
   const [foundTrees, setFoundTree] = useState({})
 
-  const handleInputChange = (index, value) => {
+  const handleClick = (index) => {
+    const input = document.querySelector(`input[data-index="${index}"]`)
+    input?.focus()
+    input?.setSelectionRange(0, input?.value.length)
+  }
+
+  const handleDone = () => {
+    for (let i = 0; i < numbers.length; i++) {
+      document.querySelector(`input[data-index="${i}"]`).blur()
+    }
+  }
+
+  const handleInputChange = (index, arg) => {
+    const value = arg === '0' ? '10' : arg
     if (/^(|[1-9]|10)$/.test(value)) {
       const newNumbers = [...numbers]
       newNumbers[index] = value
       setNumbers(newNumbers)
+      const nextInput = document.querySelector(
+        `input[data-index="${index + 1}"]`,
+      )
+      if (/^([1-9]|10)$/.test(value) && nextInput) {
+        nextInput?.focus()
+        nextInput?.setSelectionRange(0, nextInput?.value.length)
+      } else if (index == 3) {
+        document.querySelector(`input[data-index="${index}"]`).blur()
+      }
     }
   }
 
@@ -27,7 +51,6 @@ export default function ArithmeticTreeApp() {
     setNumbers(Array(numbers.length).fill(''))
     const firstInput = document.querySelector(`input[data-index="0"]`)
     firstInput?.focus()
-    firstInput?.click()
     firstInput?.setSelectionRange(0, 0)
   }
 
@@ -39,7 +62,7 @@ export default function ArithmeticTreeApp() {
         for (const op_list of cartesianPower(ops, 3)) {
           for (const tree_type of treeTypes) {
             const tree = construct(perm, tree_type(), op_list)
-            if (evaluate(tree) === 24 && !set.has(stringify_tree(tree))) {
+            if (evaluate(tree) === GOLD_NUM && !set.has(stringify_tree(tree))) {
               set.add(stringify_tree(tree))
               const match = Object.keys(acc).find((x) => same(acc[x][0], tree))
               if (match === undefined) {
@@ -58,7 +81,7 @@ export default function ArithmeticTreeApp() {
   return (
     <div className="p-4 max-w-2xl my-auto mx-auto">
       <h1 className="text-5xl leading-tight font-bold mb-6 text-center">
-        The Game of 24
+        The Game of {GOLD_NUM}
       </h1>
       <div className="mb-8">
         <div className="flex justify-center gap-2 mb-4">
@@ -70,7 +93,7 @@ export default function ArithmeticTreeApp() {
               pattern="[0-9]*"
               value={num}
               onChange={(e) => handleInputChange(i, e.target.value)}
-              onClick={() => handleInputChange(i, '')}
+              onClick={() => handleClick(i)}
               className="w-12 h-12 text-center text-xl border-2 border-gray-300 rounded font-mono cursor-pointer"
               placeholder="?"
               maxLength="2"
@@ -79,11 +102,16 @@ export default function ArithmeticTreeApp() {
           ))}
           <button
             onClick={clearAll}
-            className="px-6 py-2 !bg-blue-400 text-white rounded-full font-medium">
-            Clear All
+            className="px-2 py-1 bg-red-400 text-white rounded-lg font-medium">
+            Clear
+          </button>
+          <button
+            onClick={handleDone}
+            className="px-2 py-1 bg-blue-400 text-white rounded-lg font-medium">
+            Done
           </button>
         </div>
-        <p className="text-center text-gray-600">Enter 4 numbers</p>
+        <p className="text-center text-gray-600">Enter 4 numbers (0 is 10)</p>
       </div>
       <h2 className="text-xl font-semibold mb-4 text-center">
         Found Unique Trees {Object.keys(foundTrees).length}, Total:
