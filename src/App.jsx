@@ -75,6 +75,8 @@ export default function ArithmeticTreeApp() {
         }
       }
       setFoundTree(acc)
+    } else {
+      setFoundTree({})
     }
   }, [numbers])
 
@@ -101,17 +103,19 @@ export default function ArithmeticTreeApp() {
             />
           ))}
           <button
-            onClick={clearAll}
-            className="px-2 py-1 bg-red-400 text-white rounded-lg font-medium">
-            Clear
-          </button>
-          <button
             onClick={handleDone}
             className="px-2 py-1 bg-blue-400 text-white rounded-lg font-medium">
             Done
           </button>
+          <button
+            onClick={clearAll}
+            className="px-2 py-1 bg-red-400 text-white rounded-lg font-medium">
+            Clear
+          </button>
         </div>
-        <p className="text-center text-gray-600">Enter 4 numbers (0 is 10)</p>
+        <p className="text-center text-gray-600">
+          Enter 4 numbers (type '0' for 10)
+        </p>
       </div>
       <h2 className="text-xl font-semibold mb-4 text-center">
         Found Unique Trees {Object.keys(foundTrees).length}, Total:
