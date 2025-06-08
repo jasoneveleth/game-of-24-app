@@ -87,7 +87,54 @@ function* in_order_traversal(tree) {
   yield* in_order_traversal(tree.right)
 }
 
-function same(a_tree, b_tree) {}
+function same(a_tree, b_tree) {
+  const isleaf = (t) => t.left === undefined && t.right === undefined
+  if (
+    evaluate(a_tree) !== evaluate(b_tree) ||
+    isleaf(a_tree) !== isleaf(b_tree) ||
+    a_tree.val !== b_tree.val
+  ) {
+    return false
+  }
+
+  if (isleaf(a_tree)) {
+    return true
+  } else {
+    if ([DIV, POW, SUB].includes(a_tree.val)) {
+      return same(a_tree.left, b_tree.left) && same(a_tree.right, b_tree.right)
+    } else {
+      // normal
+      if (same(a_tree.left, b_tree.left) && same(a_tree.right, b_tree.right)) {
+        return true
+      }
+      // comm
+      if (same(a_tree.left, b_tree.right) && same(a_tree.right, b_tree.left)) {
+        return true
+      }
+      // left assoc
+      if (
+        a_tree.left.val === a_tree.val &&
+        b_tree.right.val === b_tree.val &&
+        same(a_tree.left.left, b_tree.left) &&
+        same(a_tree.left.right, b_tree.right.left) &&
+        same(a_tree.right, b_tree.right.right)
+      ) {
+        return true
+      }
+      // right assoc
+      if (
+        a_tree.right.val === a_tree.val &&
+        b_tree.left.val === b_tree.val &&
+        same(a_tree.left, b_tree.left.left) &&
+        same(a_tree.right.left, b_tree.left.right) &&
+        same(a_tree.right.right, b_tree.right)
+      ) {
+        return true
+      }
+      return false
+    }
+  }
+}
 
 const treeTypes2 = [
   [
