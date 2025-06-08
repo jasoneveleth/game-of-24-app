@@ -1,23 +1,35 @@
-import React, { useEffect, useRef } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import * as d3 from 'd3'
 
 export default function Tree({ tree }) {
   const svgRef = useRef()
+  const [isDark, setIsDark] = useState(
+    window.matchMedia('(prefers-color-scheme: dark)').matches,
+  )
+
+  // Listen for color scheme changes
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+
+    const handleChange = (e) => {
+      setIsDark(e.matches)
+    }
+
+    mediaQuery.addListener(handleChange)
+
+    return () => mediaQuery.removeListener(handleChange)
+  }, [])
 
   // Convert Tree {val, left, right} format to D3 format {name, children}
   const convertTreeToD3Format = (tree) => {
     if (!tree) return null
-
     const node = { name: tree.val.toString() }
     const children = []
-
     if (tree.left) children.push(convertTreeToD3Format(tree.left))
     if (tree.right) children.push(convertTreeToD3Format(tree.right))
-
     if (children.length > 0) {
       node.children = children
     }
-
     return node
   }
 
@@ -34,8 +46,6 @@ export default function Tree({ tree }) {
 
   const treeData = convertTreeToD3Format(tree || defaultTree)
 
-  const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-
   const style = {
     nodeRadius: 12,
     linkWidth: 2,
@@ -51,6 +61,7 @@ export default function Tree({ tree }) {
 
     const svg = d3.select(svgRef.current)
     svg.selectAll('*').remove()
+
     const width = 250
     const height = 180
     const margin = { top: 15 }
@@ -112,7 +123,7 @@ export default function Tree({ tree }) {
         .attr('fill', style.outlineColor)
         .text((d) => d.data.name)
     }
-  }, [tree, treeData])
+  }, [tree, treeData, isDark])
 
   return <svg ref={svgRef}></svg>
 }
