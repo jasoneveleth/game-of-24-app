@@ -81,7 +81,7 @@ export default function ArithmeticTreeApp() {
   }, [numbers])
 
   return (
-    <div className="p-4 max-w-2xl my-auto mx-auto">
+    <div className="p-4">
       <h1 className="text-5xl leading-tight font-bold mb-6 text-center">
         The Game of {GOLD_NUM}
       </h1>
@@ -127,7 +127,7 @@ export default function ArithmeticTreeApp() {
           gridTemplateColumns: '1fr',
           gap: '1rem',
           overflowY: 'auto',
-          maxHeight: '600px',
+          maxHeight: '40svh',
         }}>
         {Object.keys(foundTrees).map((tree_str, i) => (
           <div
