@@ -57,9 +57,9 @@ export default function ArithmeticTreeApp() {
 
   return (
     <div className="p-4 max-w-2xl my-auto mx-auto">
-      <h1 className="text-2xl font-bold mb-6 text-center">The Game of 24</h1>
-
-      {/* Input Section */}
+      <h1 className="text-5xl leading-tight font-bold mb-6 text-center">
+        The Game of 24
+      </h1>
       <div className="mb-8">
         <div className="flex justify-center gap-2 mb-4">
           {numbers.map((num, i) => (
@@ -70,7 +70,8 @@ export default function ArithmeticTreeApp() {
               pattern="[0-9]*"
               value={num}
               onChange={(e) => handleInputChange(i, e.target.value)}
-              className="w-12 h-12 text-center text-xl border-2 border-gray-300 rounded font-mono"
+              onClick={() => handleInputChange(i, '')}
+              className="w-12 h-12 text-center text-xl border-2 border-gray-300 rounded font-mono cursor-pointer"
               placeholder="?"
               maxLength="2"
               data-index={i}
@@ -100,7 +101,7 @@ export default function ArithmeticTreeApp() {
           <div
             key={tree_str}
             className="space-y-2 flex flex-col items-center justify-center">
-            <h1 className="text-sm font-bold">Solution {i + 1}</h1>
+            <h2 className="text-lg font-bold">Solution {i + 1}</h2>
             <Tree tree={foundTrees[tree_str][0]} />
             <div className="grid grid-cols-2 gap-x-6">
               {foundTrees[tree_str].map((tree, j) => (
