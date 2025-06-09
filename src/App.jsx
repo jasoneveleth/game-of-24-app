@@ -166,7 +166,9 @@ export default function ArithmeticTreeApp() {
           <div
             key={tree_str}
             className="space-y-2 flex flex-col items-center justify-center">
-            <h2 className="text-lg font-bold">Solution {i + 1}</h2>
+            <h2 className="text-lg font-bold">
+              Solution {i + 1} ({foundTrees[tree_str].length} expressions)
+            </h2>
             <Tree tree={foundTrees[tree_str][0]} />
             <div className="grid grid-cols-2 gap-x-6">
               {foundTrees[tree_str].map((tree, j) => (
