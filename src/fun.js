@@ -18,6 +18,49 @@ const exampleTree1 = {
   },
 }
 
+const exampleTree2 = Node(
+  Node(undefined, 1, undefined),
+  ADD,
+  Node(Node(undefined, 2, undefined), MUL, Node(4, POW, 5)),
+)
+
+const range = (n) => Array.from({ length: n }, (_, i) => i)
+
+function* multisets(set, k) {
+  let n = set.length
+  for (const stars of combinations(range(n - 1 + k), k)) {
+    let nbars_seen = 0
+    const res = []
+    // look through stars and bars, pick elements from the set
+    for (const i of range(n - 1 + k)) {
+      if (stars.includes(i)) {
+        res.push(set[nbars_seen])
+      } else {
+        nbars_seen++
+      }
+    }
+    yield res
+  }
+}
+
+function* combinations(set, k) {
+  if (k === 0) {
+    yield []
+    return
+  }
+  if (k > set.length) {
+    return
+  }
+
+  for (let i = 0; i <= set.length - k; i++) {
+    const first = set[i]
+    const rest = set.slice(i + 1)
+    for (const combo of combinations(rest, k - 1)) {
+      yield [first, ...combo]
+    }
+  }
+}
+
 function* permutations(set) {
   if (set.length === 0) {
     yield []
@@ -87,53 +130,75 @@ function* in_order_traversal(tree) {
   yield* in_order_traversal(tree.right)
 }
 
-function same(a_tree, b_tree) {
+function same(a, b) {
   const isleaf = (t) => t.left === undefined && t.right === undefined
   if (
-    evaluate(a_tree) !== evaluate(b_tree) ||
-    isleaf(a_tree) !== isleaf(b_tree) ||
-    a_tree.val !== b_tree.val
+    evaluate(a) !== evaluate(b) ||
+    isleaf(a) !== isleaf(b) ||
+    a.val !== b.val
   ) {
     return false
   }
 
-  if (isleaf(a_tree)) {
-    return true
-  } else {
-    if ([DIV, POW, SUB].includes(a_tree.val)) {
-      return same(a_tree.left, b_tree.left) && same(a_tree.right, b_tree.right)
-    } else {
-      // normal
-      if (same(a_tree.left, b_tree.left) && same(a_tree.right, b_tree.right)) {
-        return true
-      }
-      // comm
-      if (same(a_tree.left, b_tree.right) && same(a_tree.right, b_tree.left)) {
-        return true
-      }
-      // left assoc
-      if (
-        a_tree.left.val === a_tree.val &&
-        b_tree.right.val === b_tree.val &&
-        same(a_tree.left.left, b_tree.left) &&
-        same(a_tree.left.right, b_tree.right.left) &&
-        same(a_tree.right, b_tree.right.right)
-      ) {
-        return true
-      }
-      // right assoc
-      if (
-        a_tree.right.val === a_tree.val &&
-        b_tree.left.val === b_tree.val &&
-        same(a_tree.left, b_tree.left.left) &&
-        same(a_tree.right.left, b_tree.left.right) &&
-        same(a_tree.right.right, b_tree.right)
-      ) {
-        return true
-      }
-      return false
-    }
+  const same_children = (x, y) => {
+    return same(x.left, y.left) && same(x.right, y.right)
   }
+
+  if (isleaf(a)) {
+    return true
+  } else if (same_children(a, b)) {
+    return true
+  } else if ([ADD, MUL].includes(a.val)) {
+    // comm, associative
+    return (
+      same_children(mirror(a), b) ||
+      (a.left.val === a.val && same_children(rrotate(a), b)) ||
+      (a.right.val === a.val && same_children(lrotate(a), b))
+    )
+  }
+  return false
+}
+
+function Node(left, val, right) {
+  return { val, left, right }
+}
+
+function mirror(tree) {
+  return {
+    val: tree.val,
+    left: tree.right,
+    right: tree.left,
+  }
+}
+
+/*
+before:
+  x             y
+ / \           / \
+l   y   <->   x   r
+   / \       / \
+  m   r     l   m
+*/
+function lrotate(tree) {
+  if (!tree.right.left || !tree.right.right) {
+    return tree
+  }
+  const x = tree.val
+  const l = tree.left
+  const { left: m, val: y, right: r } = tree.right
+
+  return Node(Node(l, x, m), y, r)
+}
+
+function rrotate(tree) {
+  if (!tree.left.left || !tree.left.right) {
+    return tree
+  }
+  const y = tree.val
+  const { left: l, val: x, right: m } = tree.left
+  const r = tree.right
+
+  return Node(l, x, Node(m, y, r))
 }
 
 const treeTypes2 = [
@@ -177,4 +242,5 @@ export {
   treeTypes,
   stringify_tree,
   ops,
+  multisets,
 }

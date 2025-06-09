@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Tree from './Tree'
-import exampleTree1, {
+import {
   permutations,
   cartesianPower,
   treeTypes,
@@ -118,8 +118,8 @@ export default function ArithmeticTreeApp() {
         </p>
       </div>
       <h2 className="text-xl font-semibold mb-4 text-center">
-        Found Unique Trees {Object.keys(foundTrees).length}, Total:
-        {Object.values(foundTrees).flat().length}
+        Found {Object.values(foundTrees).flat().length} expressions, falling
+        into {Object.keys(foundTrees).length} solution classes
       </h2>
       <div
         className="max-h-100 md:max-h-150"
