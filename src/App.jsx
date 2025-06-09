@@ -203,7 +203,7 @@ export default function ArithmeticTreeApp() {
 
       {isPulling && (
         <div
-          className="fixed top-0 left-0 right-0 flex flex-row items-center align-center justify-center text-white z-40"
+          className="fixed top-0 left-0 right-0 flex flex-row items-center align-center justify-center dark:text-white text-black z-40"
           style={{
             transform: `translateY(calc(-50% + ${pullDistance / 1.8}px))`,
           }}>
@@ -227,7 +227,9 @@ export default function ArithmeticTreeApp() {
               }}
             />
           </svg>
-          <p className="text-sm font-medium ml-4">Pull to reveal QR code</p>
+          <p className="text-sm font-medium ml-4 dark:text-white text-black">
+            Pull to reveal QR code
+          </p>
         </div>
       )}
 
