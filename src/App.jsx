@@ -17,6 +17,39 @@ export default function ArithmeticTreeApp() {
   const [numbers, setNumbers] = useState(['', '', '', ''])
   const [foundTrees, setFoundTree] = useState({})
 
+  // Read from URL on mount
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const urlNumbers = [
+      params.get('n1') || '',
+      params.get('n2') || '',
+      params.get('n3') || '',
+      params.get('n4') || '',
+    ]
+    // Only update if URL has parameters
+    if (urlNumbers.some((n) => n !== '')) {
+      setNumbers(urlNumbers)
+    }
+  }, [])
+
+  // Update URL when numbers change
+  useEffect(() => {
+    const params = new URLSearchParams()
+
+    // Only add non-empty parameters
+    numbers.forEach((num, index) => {
+      if (num !== '') {
+        params.set(`n${index + 1}`, num)
+      }
+    })
+
+    const newUrl = params.toString()
+      ? `${window.location.pathname}?${params.toString()}`
+      : window.location.pathname
+
+    window.history.pushState(null, '', newUrl)
+  }, [numbers])
+
   const handleClick = (index) => {
     const input = document.querySelector(`input[data-index="${index}"]`)
     input?.focus()
